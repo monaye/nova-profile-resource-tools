@@ -76,7 +76,8 @@ module.exports = __webpack_require__(6);
 /***/ (function(module, exports, __webpack_require__) {
 
 Nova.booting(function (Vue, router, store) {
-  Vue.component('nova-profile-resource-tools', __webpack_require__(2));
+  Vue.component('nova-profile-information-tools', __webpack_require__(2));
+  Vue.component('nova-password-tools', __webpack_require__(11));
 });
 
 /***/ }),
@@ -105,7 +106,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources/js/components/Tool.vue"
+Component.options.__file = "resources/js/components/UpdateProfileInformationForm.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -114,9 +115,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-68ff5483", Component.options)
+    hotAPI.createRecord("data-v-f17af58a", Component.options)
   } else {
-    hotAPI.reload("data-v-68ff5483", Component.options)
+    hotAPI.reload("data-v-f17af58a", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -245,12 +246,224 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['resourceName', 'resourceId', 'panel'],
+  props: ["panel"],
+  data: function data() {
+    return {
+      loading: false,
+      name: this.panel.fields[0].name,
+      email: this.panel.fields[0].email
+    };
+  },
 
+  computed: {
+    hasEmailError: function hasEmailError() {
+      return (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.email)
+      );
+    },
+    shouldDisableSubmit: function shouldDisableSubmit() {
+      return !this.hasEmailError || !this.name;
+    }
+  },
   mounted: function mounted() {
-    //
+    console.log("mounting update profile info", this.panel);
+  },
+
+
+  methods: {
+    onSubmitForm: function onSubmitForm() {
+      this.updateProfileInformation();
+    },
+    updateProfileInformation: function updateProfileInformation() {
+      var _this = this;
+
+      if (this.shouldDisableSubmit) {
+        return;
+      }
+
+      this.loading = true;
+      Nova.request().post("/nova-vendor/nova-profile-resource-tools/information", {
+        name: this.name,
+        email: this.email
+      }).then(function (response) {
+        console.log("success");
+        console.log(response);
+        _this.loading = false;
+        //   this.cardLastFour = response.data.card_last_four;
+        //   this.clientSecret = response.data.client_secret;
+        _this.$toasted.success(response.data.message);
+        //   this.initializeStripeCard();
+        //   Nova.$emit(
+        //     "nova-cashier-subscription-credit-card-changed",
+        //     response.data.card_last_four
+        //   );
+        //   this.cardLastFour =
+      }).catch(function (error) {
+        console.log("error on update card", error);
+        _this.loading = false;
+        //   this.initializeStripeCard();
+        _this.$toasted.error("保存中にエラーが発生いたしました。ページを一度閉じてやり直してください。");
+      });
+    },
+    updatePhotoPreview: function updatePhotoPreview() {
+      //   const photo = this.$refs.photo.files[0];
+      //   if (!photo) return;
+      //   const reader = new FileReader();
+      //   reader.onload = (e) => {
+      //     this.photoPreview = e.target.result;
+      //   };
+      //   reader.readAsDataURL(photo);
+    },
+    deletePhoto: function deletePhoto() {
+      //   this.$inertia.delete(route("current-user-photo.destroy"), {
+      //     preserveScroll: true,
+      //     onSuccess: () => {
+      //       this.photoPreview = null;
+      //       this.clearPhotoFileInput();
+      //     },
+      //   });
+    },
+    clearPhotoFileInput: function clearPhotoFileInput() {
+      //   if (this.$refs.photo?.value) {
+      //     this.$refs.photo.value = null;
+      //   }
+    }
   }
 });
 
@@ -262,15 +475,224 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_vm._v("Nova Profile Resource Tools")])
+  return _c("div", [
+    _c(
+      "div",
+      { staticClass: "md:grid md:grid-cols-3 md:gap-6" },
+      [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "loading-card",
+          { staticClass: "md:col-span-2", attrs: { loading: _vm.loading } },
+          [
+            _c("div", { staticClass: "mt-5 md:mt-0 md:col-span-2" }, [
+              _c(
+                "form",
+                {
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.onSubmitForm.apply(null, arguments)
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "\n              px-4\n              py-5\n              bg-white\n              sm:p-6\n              shadow\n              sm:rounded-tl-md sm:rounded-tr-md\n            "
+                    },
+                    [
+                      _c("div", { staticClass: "grid grid-cols-6 gap-6" }, [
+                        _c("div", { staticClass: "col-span-6 sm:col-span-4" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass:
+                                "block font-medium text-sm text-gray-700",
+                              attrs: { for: "name" }
+                            },
+                            [_c("span", [_vm._v("Name")])]
+                          ),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.name,
+                                expression: "name"
+                              }
+                            ],
+                            staticClass:
+                              "\n                    border-gray-300\n                    focus:border-indigo-300\n                    focus:ring focus:ring-indigo-200 focus:ring-opacity-50\n                    rounded-md\n                    shadow-sm\n                    mt-1\n                    block\n                    w-full\n                  ",
+                            attrs: {
+                              id: "name",
+                              type: "text",
+                              autocomplete: "name"
+                            },
+                            domProps: { value: _vm.name },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.name = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              staticClass: "mt-2",
+                              class: { hidden: _vm.name }
+                            },
+                            [
+                              _c("p", { staticClass: "text-sm text-red-600" }, [
+                                _vm._v(
+                                  "\n                    The name field is required.\n                  "
+                                )
+                              ])
+                            ]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-span-6 sm:col-span-4" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass:
+                                "block font-medium text-sm text-gray-700",
+                              attrs: { for: "email" }
+                            },
+                            [_c("span", [_vm._v("Email")])]
+                          ),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.email,
+                                expression: "email"
+                              }
+                            ],
+                            staticClass:
+                              "\n                    border-gray-300\n                    focus:border-indigo-300\n                    focus:ring focus:ring-indigo-200 focus:ring-opacity-50\n                    rounded-md\n                    shadow-sm\n                    mt-1\n                    block\n                    w-full\n                  ",
+                            attrs: { id: "email", type: "email" },
+                            domProps: { value: _vm.email },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.email = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              staticClass: "mt-2",
+                              class: { hidden: _vm.hasEmailError }
+                            },
+                            [
+                              _c("p", { staticClass: "text-sm text-red-600" }, [
+                                _vm._v(
+                                  "\n                    Please enter vaild email address.\n                  "
+                                )
+                              ])
+                            ]
+                          )
+                        ])
+                      ])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "\n              flex\n              items-center\n              justify-end\n              px-4\n              py-3\n              bg-gray-50\n              text-right\n              sm:px-6\n              shadow\n              sm:rounded-bl-md sm:rounded-br-md\n            "
+                    },
+                    [
+                      _c("div", { staticClass: "mr-3" }, [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "text-sm text-gray-600",
+                            staticStyle: { display: "none" }
+                          },
+                          [_vm._v("\n                Saved.\n              ")]
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass:
+                            "\n                inline-flex\n                items-center\n                px-4\n                py-2\n                bg-gray-800\n                border border-transparent\n                rounded-md\n                font-semibold\n                text-xs text-white\n                uppercase\n                tracking-widest\n                hover:bg-gray-700\n                active:bg-gray-900\n                focus:outline-none\n                focus:border-gray-900\n                focus:ring focus:ring-gray-300\n                disabled:opacity-25\n                transition\n              ",
+                          attrs: {
+                            disabled: _vm.shouldDisableSubmit,
+                            type: "submit"
+                          }
+                        },
+                        [_vm._v("\n              Save\n            ")]
+                      )
+                    ]
+                  )
+                ]
+              )
+            ])
+          ]
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _vm._m(1)
+  ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "md:col-span-1 flex justify-between" }, [
+      _c("div", { staticClass: "px-4 sm:px-0" }, [
+        _c("h3", { staticClass: "text-lg font-medium text-gray-900" }, [
+          _vm._v("Profile Information")
+        ]),
+        _vm._v(" "),
+        _c("p", { staticClass: "mt-1 text-sm text-gray-600" }, [
+          _vm._v(
+            "\n          Update your account's profile information and email address.\n        "
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "px-4 sm:px-0" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "hidden sm:block" }, [
+      _c("div", { staticClass: "py-8" }, [
+        _c("div", { staticClass: "border-t border-gray-200" })
+      ])
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-68ff5483", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-f17af58a", module.exports)
   }
 }
 
@@ -279,6 +701,638 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 7 */,
+/* 8 */,
+/* 9 */,
+/* 10 */,
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(12)
+/* template */
+var __vue_template__ = __webpack_require__(13)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/UpdatePasswordForm.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-12f5d9da", Component.options)
+  } else {
+    hotAPI.reload("data-v-12f5d9da", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["panel"],
+  data: function data() {
+    return {
+      loading: false,
+      errors: {
+        password: [],
+        current_password: [],
+        password_confirmation: []
+      },
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: ""
+    };
+  },
+
+  computed: {},
+  mounted: function mounted() {
+    console.log("mounting update profile info", this.panel);
+  },
+
+
+  methods: {
+    hasError: function hasError(name) {
+      if (name) {
+        console.log("has error", name, this.errors[name]);
+        return this.errors[name] && this.errors[name].length;
+      }
+
+      return this.errors.password && this.errors.password.length && this.errors.current_password && this.errors.current_password.length && this.errors.password_confirmation && this.errors.password_confirmation.length;
+    },
+
+    onSubmitForm: function onSubmitForm() {
+      this.updatePassword();
+    },
+    resetNewPasswordErrorMessage: function resetNewPasswordErrorMessage() {
+      this.resetErrorMessage("password");
+    },
+    resetCurrentPasswordErrorMessage: function resetCurrentPasswordErrorMessage() {
+      this.resetErrorMessage("current_password");
+    },
+    resetConfirmPasswordErrorMessage: function resetConfirmPasswordErrorMessage() {
+      this.resetErrorMessage("password_confirmation");
+    },
+    resetErrorMessage: function resetErrorMessage(key) {
+      this.errors[key] = [];
+    },
+    updatePassword: function updatePassword() {
+      var _this = this;
+
+      // since we are disabling the button this shouldn't happen
+
+      if (!this.newPassword) {
+        this.errors.password = ["The password field is required."];
+      }
+      if (!this.currentPassword) {
+        this.errors.current_password = ["The current password field is required."];
+      }
+
+      if (!this.confirmPassword) {
+        this.errors.password_confirmation = ["Please confirm your password."];
+      }
+
+      console.log("has error", this.hasError());
+      if (this.hasError()) {
+        // this.$forceUpdate();
+        return;
+      }
+
+      if (this.newPassword !== this.confirmPassword) {
+        this.confirmPasswordErrorMessage = "New password and confirm password doesn't match. Please check your new password again.";
+        return;
+      }
+
+      this.loading = true;
+
+      Nova.request().post("/nova-vendor/nova-profile-resource-tools/password", {
+        current_password: this.currentPassword,
+        password: this.newPassword,
+        password_confirmation: this.confirmPassword
+      }).then(function (response) {
+        console.log("success");
+        console.log(response);
+        _this.loading = false;
+
+        _this.$toasted.success(response.data.message);
+      }).catch(function (error) {
+        console.log("error on update card", error.response.data.errors);
+        _this.loading = false;
+
+        if (error.response.data.errors) {
+          _this.errors = error.response.data.errors;
+          // this.$forceUpdate();
+          // this.$toasted.error(
+          //   ""
+          // );
+          return;
+        }
+        //   this.initializeStripeCard();
+        _this.$toasted.error("保存中にエラーが発生いたしました。ページを一度閉じてやり直してください。");
+      });
+    },
+    updatePhotoPreview: function updatePhotoPreview() {
+      //   const photo = this.$refs.photo.files[0];
+      //   if (!photo) return;
+      //   const reader = new FileReader();
+      //   reader.onload = (e) => {
+      //     this.photoPreview = e.target.result;
+      //   };
+      //   reader.readAsDataURL(photo);
+    },
+    deletePhoto: function deletePhoto() {
+      //   this.$inertia.delete(route("current-user-photo.destroy"), {
+      //     preserveScroll: true,
+      //     onSuccess: () => {
+      //       this.photoPreview = null;
+      //       this.clearPhotoFileInput();
+      //     },
+      //   });
+    },
+    clearPhotoFileInput: function clearPhotoFileInput() {
+      //   if (this.$refs.photo?.value) {
+      //     this.$refs.photo.value = null;
+      //   }
+    }
+  }
+});
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "div",
+      { staticClass: "md:grid md:grid-cols-3 md:gap-6" },
+      [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "loading-card",
+          { staticClass: "md:col-span-2", attrs: { loading: _vm.loading } },
+          [
+            _c("div", { staticClass: "mt-5 md:mt-0 md:col-span-2" }, [
+              _c(
+                "form",
+                {
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.onSubmitForm.apply(null, arguments)
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "\n              px-4\n              py-5\n              bg-white\n              sm:p-6\n              shadow\n              sm:rounded-tl-md sm:rounded-tr-md\n            "
+                    },
+                    [
+                      _c("div", { staticClass: "grid grid-cols-6 gap-6" }, [
+                        _c("div", { staticClass: "col-span-6 sm:col-span-4" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass:
+                                "block font-medium text-sm text-gray-700",
+                              attrs: { for: "current_password" }
+                            },
+                            [_c("span", [_vm._v("Current Password")])]
+                          ),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.currentPassword,
+                                expression: "currentPassword"
+                              }
+                            ],
+                            staticClass:
+                              "\n                    border-gray-300\n                    focus:border-indigo-300\n                    focus:ring focus:ring-indigo-200 focus:ring-opacity-50\n                    rounded-md\n                    shadow-sm\n                    mt-1\n                    block\n                    w-full\n                  ",
+                            attrs: { id: "current_password", type: "password" },
+                            domProps: { value: _vm.currentPassword },
+                            on: {
+                              keyup: _vm.resetCurrentPasswordErrorMessage,
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.currentPassword = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm.hasError("current_password")
+                            ? _c("div", { staticClass: "mt-2" }, [
+                                _c(
+                                  "p",
+                                  { staticClass: "text-sm text-red-600" },
+                                  [
+                                    _vm._v(
+                                      "\n                    " +
+                                        _vm._s(_vm.errors.current_password[0]) +
+                                        "\n                  "
+                                    )
+                                  ]
+                                )
+                              ])
+                            : _vm._e()
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-span-6 sm:col-span-4" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass:
+                                "block font-medium text-sm text-gray-700",
+                              attrs: { for: "password" }
+                            },
+                            [_c("span", [_vm._v("New Password")])]
+                          ),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.newPassword,
+                                expression: "newPassword"
+                              }
+                            ],
+                            staticClass:
+                              "\n                    border-gray-300\n                    focus:border-indigo-300\n                    focus:ring focus:ring-indigo-200 focus:ring-opacity-50\n                    rounded-md\n                    shadow-sm\n                    mt-1\n                    block\n                    w-full\n                  ",
+                            attrs: { id: "password", type: "password" },
+                            domProps: { value: _vm.newPassword },
+                            on: {
+                              keyup: _vm.resetNewPasswordErrorMessage,
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.newPassword = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm.hasError("password")
+                            ? _c("div", { staticClass: "mt-2" }, [
+                                _c(
+                                  "p",
+                                  { staticClass: "text-sm text-red-600" },
+                                  [
+                                    _vm._v(
+                                      "\n                    " +
+                                        _vm._s(_vm.errors.password[0]) +
+                                        "\n                  "
+                                    )
+                                  ]
+                                )
+                              ])
+                            : _vm._e()
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-span-6 sm:col-span-4" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass:
+                                "block font-medium text-sm text-gray-700",
+                              attrs: { for: "confirm_password" }
+                            },
+                            [_c("span", [_vm._v("Confirm Password")])]
+                          ),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.confirmPassword,
+                                expression: "confirmPassword"
+                              }
+                            ],
+                            staticClass:
+                              "\n                    border-gray-300\n                    focus:border-indigo-300\n                    focus:ring focus:ring-indigo-200 focus:ring-opacity-50\n                    rounded-md\n                    shadow-sm\n                    mt-1\n                    block\n                    w-full\n                  ",
+                            attrs: { id: "confirm_password", type: "password" },
+                            domProps: { value: _vm.confirmPassword },
+                            on: {
+                              keyup: _vm.resetConfirmPasswordErrorMessage,
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.confirmPassword = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm.hasError("password_confirmation")
+                            ? _c("div", { staticClass: "mt-2" }, [
+                                _c(
+                                  "p",
+                                  { staticClass: "text-sm text-red-600" },
+                                  [
+                                    _vm._v(
+                                      "\n                    " +
+                                        _vm._s(
+                                          _vm.errors.password_confirmation[0]
+                                        ) +
+                                        "\n                  "
+                                    )
+                                  ]
+                                )
+                              ])
+                            : _vm._e()
+                        ])
+                      ])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "\n              flex\n              items-center\n              justify-end\n              px-4\n              py-3\n              bg-gray-50\n              text-right\n              sm:px-6\n              shadow\n              sm:rounded-bl-md sm:rounded-br-md\n            "
+                    },
+                    [
+                      _c("div", { staticClass: "mr-3" }, [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "text-sm text-gray-600",
+                            staticStyle: { display: "none" }
+                          },
+                          [_vm._v("\n                Saved.\n              ")]
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass:
+                            "\n                inline-flex\n                items-center\n                px-4\n                py-2\n                bg-gray-800\n                border border-transparent\n                rounded-md\n                font-semibold\n                text-xs text-white\n                uppercase\n                tracking-widest\n                hover:bg-gray-700\n                active:bg-gray-900\n                focus:outline-none\n                focus:border-gray-900\n                focus:ring focus:ring-gray-300\n                disabled:opacity-25\n                transition\n              ",
+                          attrs: { type: "submit" }
+                        },
+                        [_vm._v("\n              Save\n            ")]
+                      )
+                    ]
+                  )
+                ]
+              )
+            ])
+          ]
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _vm._m(1)
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "md:col-span-1 flex justify-between" }, [
+      _c("div", { staticClass: "px-4 sm:px-0" }, [
+        _c("h3", { staticClass: "text-lg font-medium text-gray-900" }, [
+          _vm._v("Update Password")
+        ]),
+        _vm._v(" "),
+        _c("p", { staticClass: "mt-1 text-sm text-gray-600" }, [
+          _vm._v(
+            "\n          Ensure your account is using a long, random password to stay secure.\n        "
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "px-4 sm:px-0" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "hidden sm:block" }, [
+      _c("div", { staticClass: "py-8" }, [
+        _c("div", { staticClass: "border-t border-gray-200" })
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-12f5d9da", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

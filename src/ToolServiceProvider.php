@@ -2,13 +2,15 @@
 
 namespace Monaye\NovaProfileResourceTools;
 
+use Laravel\Nova\Nova;
+use Laravel\Nova\Events\ServingNova;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Nova\Events\ServingNova;
-use Laravel\Nova\Nova;
 
 class ToolServiceProvider extends ServiceProvider
 {
+
+    public static $slug = 'nova-profile-resource-tools';
     /**
      * Bootstrap any application services.
      *
@@ -20,9 +22,14 @@ class ToolServiceProvider extends ServiceProvider
             $this->routes();
         });
 
+
+        $this->publishes([
+            __DIR__ . '/../config/' . self::$slug . '.php' => config_path(self::$slug . '.php'),
+        ]);
+
         Nova::serving(function (ServingNova $event) {
-            Nova::script('nova-profile-resource-tools', __DIR__.'/../dist/js/tool.js');
-            Nova::style('nova-profile-resource-tools', __DIR__.'/../dist/css/tool.css');
+            Nova::script(self::$slug, __DIR__ . '/../dist/js/tool.js');
+            Nova::style(self::$slug, __DIR__ . '/../dist/css/tool.css');
         });
     }
 
@@ -38,8 +45,8 @@ class ToolServiceProvider extends ServiceProvider
         }
 
         Route::middleware(['nova'])
-                ->prefix('nova-vendor/nova-profile-resource-tools')
-                ->group(__DIR__.'/../routes/api.php');
+            ->prefix('nova-vendor/' . self::$slug)
+            ->group(__DIR__ . '/../routes/api.php');
     }
 
     /**
@@ -50,5 +57,9 @@ class ToolServiceProvider extends ServiceProvider
     public function register()
     {
         //
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/' . self::$slug . '.php',
+            self::$slug
+        );
     }
 }

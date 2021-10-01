@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/endpoint', function (Request $request) {
 //     //
 // });
+
+Route::post('/information', config('nova-profile-resource-tools.handleInformationUpdate'))
+    ->name('update-nova-profile-information');
+
+Route::post('/password', config('nova-profile-resource-tools.handlePasswordUpdate'))
+    ->name('update-nova-profile-password');
