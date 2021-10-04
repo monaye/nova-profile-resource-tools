@@ -3,9 +3,15 @@
     <div class="md:grid md:grid-cols-3 md:gap-6">
       <div class="md:col-span-1 flex justify-between">
         <div class="px-4 sm:px-0">
-          <h3 class="text-lg font-medium text-gray-900">Update Password</h3>
+          <h3 class="text-lg font-medium text-gray-900">
+            {{ __("Update Password") }}
+          </h3>
           <p class="mt-1 text-sm text-gray-600">
-            Ensure your account is using a long, random password to stay secure.
+            {{
+              __(
+                "Ensure your account is using a long, random password to stay secure."
+              )
+            }}
           </p>
         </div>
         <div class="px-4 sm:px-0"></div>
@@ -29,7 +35,7 @@
                   <label
                     class="block font-medium text-sm text-gray-700"
                     for="current_password"
-                    ><span>Current Password</span></label
+                    ><span>{{ __("Current Password") }}</span></label
                   ><input
                     class="
                       border-gray-300
@@ -57,8 +63,9 @@
                   <label
                     class="block font-medium text-sm text-gray-700"
                     for="password"
-                    ><span>New Password</span></label
-                  ><input
+                    ><span>{{ __("New Password") }}</span></label
+                  >
+                  <input
                     class="
                       border-gray-300
                       focus:border-indigo-300
@@ -85,8 +92,9 @@
                   <label
                     class="block font-medium text-sm text-gray-700"
                     for="confirm_password"
-                    ><span>Confirm Password</span></label
-                  ><input
+                    ><span>{{ __("Confirm Password") }}</span></label
+                  >
+                  <input
                     class="
                       border-gray-300
                       focus:border-indigo-300
@@ -124,11 +132,6 @@
                 sm:rounded-bl-md sm:rounded-br-md
               "
             >
-              <div class="mr-3">
-                <div class="text-sm text-gray-600" style="display: none">
-                  Saved.
-                </div>
-              </div>
               <button
                 type="submit"
                 class="
@@ -152,7 +155,7 @@
                   transition
                 "
               >
-                Save
+                {{ __("Save") }}
               </button>
             </div>
           </form>
@@ -223,16 +226,18 @@ export default {
       // since we are disabling the button this shouldn't happen
 
       if (!this.newPassword) {
-        this.errors.password = ["The password field is required."];
+        this.errors.password = [Nova.app.__("The password field is required.")];
       }
       if (!this.currentPassword) {
         this.errors.current_password = [
-          "The current password field is required.",
+          Nova.app.__("The current password field is required."),
         ];
       }
 
       if (!this.confirmPassword) {
-        this.errors.password_confirmation = ["Please confirm your password."];
+        this.errors.password_confirmation = [
+          Nova.app.__("Please confirm your password."),
+        ];
       }
 
       console.log("has error", this.hasError());
@@ -242,8 +247,11 @@ export default {
       }
 
       if (this.newPassword !== this.confirmPassword) {
-        this.confirmPasswordErrorMessage =
-          "New password and confirm password doesn't match. Please check your new password again.";
+        this.confirmPasswordErrorMessage = __(
+          Nova.app.__(
+            "New password and confirm password doesn't match. Please check your new password again."
+          )
+        );
         return;
       }
 
@@ -268,43 +276,15 @@ export default {
 
           if (error.response.data.errors) {
             this.errors = error.response.data.errors;
-            // this.$forceUpdate();
-            // this.$toasted.error(
-            //   ""
-            // );
             return;
           }
-          //   this.initializeStripeCard();
+
           this.$toasted.error(
-            "保存中にエラーが発生いたしました。ページを一度閉じてやり直してください。"
+            Nova.app.__(
+              "保存中にエラーが発生いたしました。ページを一度閉じてやり直してください。"
+            )
           );
         });
-    },
-
-    updatePhotoPreview() {
-      //   const photo = this.$refs.photo.files[0];
-      //   if (!photo) return;
-      //   const reader = new FileReader();
-      //   reader.onload = (e) => {
-      //     this.photoPreview = e.target.result;
-      //   };
-      //   reader.readAsDataURL(photo);
-    },
-
-    deletePhoto() {
-      //   this.$inertia.delete(route("current-user-photo.destroy"), {
-      //     preserveScroll: true,
-      //     onSuccess: () => {
-      //       this.photoPreview = null;
-      //       this.clearPhotoFileInput();
-      //     },
-      //   });
-    },
-
-    clearPhotoFileInput() {
-      //   if (this.$refs.photo?.value) {
-      //     this.$refs.photo.value = null;
-      //   }
     },
   },
 };

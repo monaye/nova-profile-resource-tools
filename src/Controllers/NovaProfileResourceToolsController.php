@@ -4,16 +4,28 @@ namespace Monaye\NovaProfileResourceTools\Controllers;
 
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 
 class NovaProfileResourceToolsController extends Controller
 {
     public function updateInformation(Request $request)
     {
+
         $user = $request->user();
+
+
+        Validator::make($request->all(), [
+            'name' => ['required'],
+            'email' => [
+                'required', 'email',
+                Rule::unique('users')->ignore($user)->whereNull('deleted_at'),
+            ],
+        ])->validate();
+
         $user->email = $request->email;
         $user->username = $request->email;
         $user->save();

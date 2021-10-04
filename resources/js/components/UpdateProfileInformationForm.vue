@@ -3,9 +3,13 @@
     <div class="md:grid md:grid-cols-3 md:gap-6">
       <div class="md:col-span-1 flex justify-between">
         <div class="px-4 sm:px-0">
-          <h3 class="text-lg font-medium text-gray-900">Profile Information</h3>
+          <h3 class="text-lg font-medium text-gray-900">
+            {{ __("Profile Information") }}
+          </h3>
           <p class="mt-1 text-sm text-gray-600">
-            Update your account's profile information and email address.
+            {{
+              __("Update your account's profile information and email address.")
+            }}
           </p>
         </div>
         <div class="px-4 sm:px-0"></div>
@@ -29,7 +33,7 @@
                   <label
                     class="block font-medium text-sm text-gray-700"
                     for="name"
-                    ><span>Name</span></label
+                    ><span>{{ __("Name") }}</span></label
                   ><input
                     class="
                       border-gray-300
@@ -43,12 +47,12 @@
                     "
                     id="name"
                     type="text"
-                    autocomplete="name"
                     v-model="name"
+                    v-on:keyup="resetNameErrorMessage"
                   />
-                  <div class="mt-2" v-bind:class="{ hidden: name }">
+                  <div class="mt-2" v-if="hasError('name')">
                     <p class="text-sm text-red-600">
-                      The name field is required.
+                      {{ errors.name[0] }}
                     </p>
                   </div>
                 </div>
@@ -57,7 +61,7 @@
                   <label
                     class="block font-medium text-sm text-gray-700"
                     for="email"
-                    ><span>Email</span></label
+                    ><span>{{ __("Email") }}</span></label
                   ><input
                     class="
                       border-gray-300
@@ -72,10 +76,11 @@
                     id="email"
                     type="email"
                     v-model="email"
+                    v-on:keyup="resetEmailErrorMessage"
                   />
-                  <div class="mt-2" v-bind:class="{ hidden: hasEmailError }">
+                  <div class="mt-2" v-if="hasError('email')">
                     <p class="text-sm text-red-600">
-                      Please enter vaild email address.
+                      {{ errors.email[0] }}
                     </p>
                   </div>
                 </div>
@@ -95,13 +100,7 @@
                 sm:rounded-bl-md sm:rounded-br-md
               "
             >
-              <div class="mr-3">
-                <div class="text-sm text-gray-600" style="display: none">
-                  Saved.
-                </div>
-              </div>
               <button
-                :disabled="shouldDisableSubmit"
                 type="submit"
                 class="
                   inline-flex
@@ -124,7 +123,7 @@
                   transition
                 "
               >
-                Save
+                {{ __("Save") }}
               </button>
             </div>
           </form>
@@ -142,31 +141,66 @@ export default {
   props: ["panel"],
   data() {
     return {
+      errors: {
+        name: [],
+        email: [],
+      },
       loading: false,
       name: this.panel.fields[0].name,
       email: this.panel.fields[0].email,
     };
   },
-  computed: {
-    hasEmailError() {
-      return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-        this.email
-      );
-    },
-    shouldDisableSubmit() {
-      return !this.hasEmailError || !this.name;
-    },
-  },
+  computed: {},
   mounted() {
     console.log("mounting update profile info", this.panel);
   },
 
   methods: {
+    formHasError() {
+      return !this.hasCorrentEmailFormat() || !this.email || !this.name;
+    },
+    hasCorrentEmailFormat() {
+      return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+        this.email
+      );
+    },
+    hasError: function (name) {
+      if (name) {
+        return this.errors[name] && this.errors[name].length;
+      }
+
+      return (
+        this.errors.name &&
+        this.errors.name.length &&
+        this.errors.email &&
+        this.errors.email.length
+      );
+    },
     onSubmitForm() {
       this.updateProfileInformation();
     },
+    resetErrorMessage(key) {
+      this.errors[key] = [];
+    },
+    resetNameErrorMessage() {
+      console.log("resetting name");
+      this.resetErrorMessage("name");
+    },
+    resetEmailErrorMessage() {
+      this.resetErrorMessage("email");
+    },
     updateProfileInformation() {
-      if (this.shouldDisableSubmit) {
+      if (!this.name) {
+        this.errors.name = [Nova.app.__("Name is required.")];
+      }
+      if (!this.email) {
+        this.errors.email = [Nova.app.__("Email is required.")];
+      } else if (!this.hasCorrentEmailFormat()) {
+        console.log("has corrent email", this.hasCorrentEmailFormat());
+        this.errors.email = [Nova.app.__("Please enter corrent email format.")];
+      }
+
+      if (this.formHasError()) {
         return;
       }
 
@@ -180,50 +214,22 @@ export default {
           console.log("success");
           console.log(response);
           this.loading = false;
-          //   this.cardLastFour = response.data.card_last_four;
-          //   this.clientSecret = response.data.client_secret;
           this.$toasted.success(response.data.message);
-          //   this.initializeStripeCard();
-          //   Nova.$emit(
-          //     "nova-cashier-subscription-credit-card-changed",
-          //     response.data.card_last_four
-          //   );
-          //   this.cardLastFour =
         })
         .catch((error) => {
           console.log("error on update card", error);
           this.loading = false;
-          //   this.initializeStripeCard();
+
+          if (error.response.data.errors) {
+            this.errors = error.response.data.errors;
+            return;
+          }
           this.$toasted.error(
-            "保存中にエラーが発生いたしました。ページを一度閉じてやり直してください。"
+            Nova.app.__(
+              "保存中にエラーが発生いたしました。ページを一度閉じてやり直してください。"
+            )
           );
         });
-    },
-
-    updatePhotoPreview() {
-      //   const photo = this.$refs.photo.files[0];
-      //   if (!photo) return;
-      //   const reader = new FileReader();
-      //   reader.onload = (e) => {
-      //     this.photoPreview = e.target.result;
-      //   };
-      //   reader.readAsDataURL(photo);
-    },
-
-    deletePhoto() {
-      //   this.$inertia.delete(route("current-user-photo.destroy"), {
-      //     preserveScroll: true,
-      //     onSuccess: () => {
-      //       this.photoPreview = null;
-      //       this.clearPhotoFileInput();
-      //     },
-      //   });
-    },
-
-    clearPhotoFileInput() {
-      //   if (this.$refs.photo?.value) {
-      //     this.$refs.photo.value = null;
-      //   }
     },
   },
 };

@@ -380,40 +380,70 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["panel"],
   data: function data() {
     return {
+      errors: {
+        name: [],
+        email: []
+      },
       loading: false,
       name: this.panel.fields[0].name,
       email: this.panel.fields[0].email
     };
   },
 
-  computed: {
-    hasEmailError: function hasEmailError() {
-      return (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.email)
-      );
-    },
-    shouldDisableSubmit: function shouldDisableSubmit() {
-      return !this.hasEmailError || !this.name;
-    }
-  },
+  computed: {},
   mounted: function mounted() {
     console.log("mounting update profile info", this.panel);
   },
 
 
   methods: {
+    formHasError: function formHasError() {
+      return !this.hasCorrentEmailFormat() || !this.email || !this.name;
+    },
+    hasCorrentEmailFormat: function hasCorrentEmailFormat() {
+      return (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.email)
+      );
+    },
+
+    hasError: function hasError(name) {
+      if (name) {
+        return this.errors[name] && this.errors[name].length;
+      }
+
+      return this.errors.name && this.errors.name.length && this.errors.email && this.errors.email.length;
+    },
     onSubmitForm: function onSubmitForm() {
       this.updateProfileInformation();
+    },
+    resetErrorMessage: function resetErrorMessage(key) {
+      this.errors[key] = [];
+    },
+    resetNameErrorMessage: function resetNameErrorMessage() {
+      console.log("resetting name");
+      this.resetErrorMessage("name");
+    },
+    resetEmailErrorMessage: function resetEmailErrorMessage() {
+      this.resetErrorMessage("email");
     },
     updateProfileInformation: function updateProfileInformation() {
       var _this = this;
 
-      if (this.shouldDisableSubmit) {
+      if (!this.name) {
+        this.errors.name = [Nova.app.__("Name is required.")];
+      }
+      if (!this.email) {
+        this.errors.email = [Nova.app.__("Email is required.")];
+      } else if (!this.hasCorrentEmailFormat()) {
+        console.log("has corrent email", this.hasCorrentEmailFormat());
+        this.errors.email = [Nova.app.__("Please enter corrent email format.")];
+      }
+
+      if (this.formHasError()) {
         return;
       }
 
@@ -425,44 +455,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         console.log("success");
         console.log(response);
         _this.loading = false;
-        //   this.cardLastFour = response.data.card_last_four;
-        //   this.clientSecret = response.data.client_secret;
         _this.$toasted.success(response.data.message);
-        //   this.initializeStripeCard();
-        //   Nova.$emit(
-        //     "nova-cashier-subscription-credit-card-changed",
-        //     response.data.card_last_four
-        //   );
-        //   this.cardLastFour =
       }).catch(function (error) {
         console.log("error on update card", error);
         _this.loading = false;
-        //   this.initializeStripeCard();
-        _this.$toasted.error("保存中にエラーが発生いたしました。ページを一度閉じてやり直してください。");
+
+        if (error.response.data.errors) {
+          _this.errors = error.response.data.errors;
+          return;
+        }
+        _this.$toasted.error(Nova.app.__("保存中にエラーが発生いたしました。ページを一度閉じてやり直してください。"));
       });
-    },
-    updatePhotoPreview: function updatePhotoPreview() {
-      //   const photo = this.$refs.photo.files[0];
-      //   if (!photo) return;
-      //   const reader = new FileReader();
-      //   reader.onload = (e) => {
-      //     this.photoPreview = e.target.result;
-      //   };
-      //   reader.readAsDataURL(photo);
-    },
-    deletePhoto: function deletePhoto() {
-      //   this.$inertia.delete(route("current-user-photo.destroy"), {
-      //     preserveScroll: true,
-      //     onSuccess: () => {
-      //       this.photoPreview = null;
-      //       this.clearPhotoFileInput();
-      //     },
-      //   });
-    },
-    clearPhotoFileInput: function clearPhotoFileInput() {
-      //   if (this.$refs.photo?.value) {
-      //     this.$refs.photo.value = null;
-      //   }
     }
   }
 });
@@ -480,7 +483,31 @@ var render = function() {
       "div",
       { staticClass: "md:grid md:grid-cols-3 md:gap-6" },
       [
-        _vm._m(0),
+        _c("div", { staticClass: "md:col-span-1 flex justify-between" }, [
+          _c("div", { staticClass: "px-4 sm:px-0" }, [
+            _c("h3", { staticClass: "text-lg font-medium text-gray-900" }, [
+              _vm._v(
+                "\n          " +
+                  _vm._s(_vm.__("Profile Information")) +
+                  "\n        "
+              )
+            ]),
+            _vm._v(" "),
+            _c("p", { staticClass: "mt-1 text-sm text-gray-600" }, [
+              _vm._v(
+                "\n          " +
+                  _vm._s(
+                    _vm.__(
+                      "Update your account's profile information and email address."
+                    )
+                  ) +
+                  "\n        "
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "px-4 sm:px-0" })
+        ]),
         _vm._v(" "),
         _c(
           "loading-card",
@@ -514,7 +541,7 @@ var render = function() {
                                 "block font-medium text-sm text-gray-700",
                               attrs: { for: "name" }
                             },
-                            [_c("span", [_vm._v("Name")])]
+                            [_c("span", [_vm._v(_vm._s(_vm.__("Name")))])]
                           ),
                           _c("input", {
                             directives: [
@@ -527,13 +554,10 @@ var render = function() {
                             ],
                             staticClass:
                               "\n                    border-gray-300\n                    focus:border-indigo-300\n                    focus:ring focus:ring-indigo-200 focus:ring-opacity-50\n                    rounded-md\n                    shadow-sm\n                    mt-1\n                    block\n                    w-full\n                  ",
-                            attrs: {
-                              id: "name",
-                              type: "text",
-                              autocomplete: "name"
-                            },
+                            attrs: { id: "name", type: "text" },
                             domProps: { value: _vm.name },
                             on: {
+                              keyup: _vm.resetNameErrorMessage,
                               input: function($event) {
                                 if ($event.target.composing) {
                                   return
@@ -543,20 +567,21 @@ var render = function() {
                             }
                           }),
                           _vm._v(" "),
-                          _c(
-                            "div",
-                            {
-                              staticClass: "mt-2",
-                              class: { hidden: _vm.name }
-                            },
-                            [
-                              _c("p", { staticClass: "text-sm text-red-600" }, [
-                                _vm._v(
-                                  "\n                    The name field is required.\n                  "
+                          _vm.hasError("name")
+                            ? _c("div", { staticClass: "mt-2" }, [
+                                _c(
+                                  "p",
+                                  { staticClass: "text-sm text-red-600" },
+                                  [
+                                    _vm._v(
+                                      "\n                    " +
+                                        _vm._s(_vm.errors.name[0]) +
+                                        "\n                  "
+                                    )
+                                  ]
                                 )
                               ])
-                            ]
-                          )
+                            : _vm._e()
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-span-6 sm:col-span-4" }, [
@@ -567,7 +592,7 @@ var render = function() {
                                 "block font-medium text-sm text-gray-700",
                               attrs: { for: "email" }
                             },
-                            [_c("span", [_vm._v("Email")])]
+                            [_c("span", [_vm._v(_vm._s(_vm.__("Email")))])]
                           ),
                           _c("input", {
                             directives: [
@@ -583,6 +608,7 @@ var render = function() {
                             attrs: { id: "email", type: "email" },
                             domProps: { value: _vm.email },
                             on: {
+                              keyup: _vm.resetEmailErrorMessage,
                               input: function($event) {
                                 if ($event.target.composing) {
                                   return
@@ -592,20 +618,21 @@ var render = function() {
                             }
                           }),
                           _vm._v(" "),
-                          _c(
-                            "div",
-                            {
-                              staticClass: "mt-2",
-                              class: { hidden: _vm.hasEmailError }
-                            },
-                            [
-                              _c("p", { staticClass: "text-sm text-red-600" }, [
-                                _vm._v(
-                                  "\n                    Please enter vaild email address.\n                  "
+                          _vm.hasError("email")
+                            ? _c("div", { staticClass: "mt-2" }, [
+                                _c(
+                                  "p",
+                                  { staticClass: "text-sm text-red-600" },
+                                  [
+                                    _vm._v(
+                                      "\n                    " +
+                                        _vm._s(_vm.errors.email[0]) +
+                                        "\n                  "
+                                    )
+                                  ]
                                 )
                               ])
-                            ]
-                          )
+                            : _vm._e()
                         ])
                       ])
                     ]
@@ -618,28 +645,20 @@ var render = function() {
                         "\n              flex\n              items-center\n              justify-end\n              px-4\n              py-3\n              bg-gray-50\n              text-right\n              sm:px-6\n              shadow\n              sm:rounded-bl-md sm:rounded-br-md\n            "
                     },
                     [
-                      _c("div", { staticClass: "mr-3" }, [
-                        _c(
-                          "div",
-                          {
-                            staticClass: "text-sm text-gray-600",
-                            staticStyle: { display: "none" }
-                          },
-                          [_vm._v("\n                Saved.\n              ")]
-                        )
-                      ]),
-                      _vm._v(" "),
                       _c(
                         "button",
                         {
                           staticClass:
                             "\n                inline-flex\n                items-center\n                px-4\n                py-2\n                bg-gray-800\n                border border-transparent\n                rounded-md\n                font-semibold\n                text-xs text-white\n                uppercase\n                tracking-widest\n                hover:bg-gray-700\n                active:bg-gray-900\n                focus:outline-none\n                focus:border-gray-900\n                focus:ring focus:ring-gray-300\n                disabled:opacity-25\n                transition\n              ",
-                          attrs: {
-                            disabled: _vm.shouldDisableSubmit,
-                            type: "submit"
-                          }
+                          attrs: { type: "submit" }
                         },
-                        [_vm._v("\n              Save\n            ")]
+                        [
+                          _vm._v(
+                            "\n              " +
+                              _vm._s(_vm.__("Save")) +
+                              "\n            "
+                          )
+                        ]
                       )
                     ]
                   )
@@ -652,30 +671,10 @@ var render = function() {
       1
     ),
     _vm._v(" "),
-    _vm._m(1)
+    _vm._m(0)
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "md:col-span-1 flex justify-between" }, [
-      _c("div", { staticClass: "px-4 sm:px-0" }, [
-        _c("h3", { staticClass: "text-lg font-medium text-gray-900" }, [
-          _vm._v("Profile Information")
-        ]),
-        _vm._v(" "),
-        _c("p", { staticClass: "mt-1 text-sm text-gray-600" }, [
-          _vm._v(
-            "\n          Update your account's profile information and email address.\n        "
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "px-4 sm:px-0" })
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -926,6 +925,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["panel"],
@@ -980,14 +982,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       // since we are disabling the button this shouldn't happen
 
       if (!this.newPassword) {
-        this.errors.password = ["The password field is required."];
+        this.errors.password = [Nova.app.__("The password field is required.")];
       }
       if (!this.currentPassword) {
-        this.errors.current_password = ["The current password field is required."];
+        this.errors.current_password = [Nova.app.__("The current password field is required.")];
       }
 
       if (!this.confirmPassword) {
-        this.errors.password_confirmation = ["Please confirm your password."];
+        this.errors.password_confirmation = [Nova.app.__("Please confirm your password.")];
       }
 
       console.log("has error", this.hasError());
@@ -997,7 +999,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
 
       if (this.newPassword !== this.confirmPassword) {
-        this.confirmPasswordErrorMessage = "New password and confirm password doesn't match. Please check your new password again.";
+        this.confirmPasswordErrorMessage = __(Nova.app.__("New password and confirm password doesn't match. Please check your new password again."));
         return;
       }
 
@@ -1019,38 +1021,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         if (error.response.data.errors) {
           _this.errors = error.response.data.errors;
-          // this.$forceUpdate();
-          // this.$toasted.error(
-          //   ""
-          // );
           return;
         }
-        //   this.initializeStripeCard();
-        _this.$toasted.error("保存中にエラーが発生いたしました。ページを一度閉じてやり直してください。");
+
+        _this.$toasted.error(Nova.app.__("保存中にエラーが発生いたしました。ページを一度閉じてやり直してください。"));
       });
-    },
-    updatePhotoPreview: function updatePhotoPreview() {
-      //   const photo = this.$refs.photo.files[0];
-      //   if (!photo) return;
-      //   const reader = new FileReader();
-      //   reader.onload = (e) => {
-      //     this.photoPreview = e.target.result;
-      //   };
-      //   reader.readAsDataURL(photo);
-    },
-    deletePhoto: function deletePhoto() {
-      //   this.$inertia.delete(route("current-user-photo.destroy"), {
-      //     preserveScroll: true,
-      //     onSuccess: () => {
-      //       this.photoPreview = null;
-      //       this.clearPhotoFileInput();
-      //     },
-      //   });
-    },
-    clearPhotoFileInput: function clearPhotoFileInput() {
-      //   if (this.$refs.photo?.value) {
-      //     this.$refs.photo.value = null;
-      //   }
     }
   }
 });
@@ -1068,7 +1043,31 @@ var render = function() {
       "div",
       { staticClass: "md:grid md:grid-cols-3 md:gap-6" },
       [
-        _vm._m(0),
+        _c("div", { staticClass: "md:col-span-1 flex justify-between" }, [
+          _c("div", { staticClass: "px-4 sm:px-0" }, [
+            _c("h3", { staticClass: "text-lg font-medium text-gray-900" }, [
+              _vm._v(
+                "\n          " +
+                  _vm._s(_vm.__("Update Password")) +
+                  "\n        "
+              )
+            ]),
+            _vm._v(" "),
+            _c("p", { staticClass: "mt-1 text-sm text-gray-600" }, [
+              _vm._v(
+                "\n          " +
+                  _vm._s(
+                    _vm.__(
+                      "Ensure your account is using a long, random password to stay secure."
+                    )
+                  ) +
+                  "\n        "
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "px-4 sm:px-0" })
+        ]),
         _vm._v(" "),
         _c(
           "loading-card",
@@ -1102,7 +1101,11 @@ var render = function() {
                                 "block font-medium text-sm text-gray-700",
                               attrs: { for: "current_password" }
                             },
-                            [_c("span", [_vm._v("Current Password")])]
+                            [
+                              _c("span", [
+                                _vm._v(_vm._s(_vm.__("Current Password")))
+                              ])
+                            ]
                           ),
                           _c("input", {
                             directives: [
@@ -1153,8 +1156,13 @@ var render = function() {
                                 "block font-medium text-sm text-gray-700",
                               attrs: { for: "password" }
                             },
-                            [_c("span", [_vm._v("New Password")])]
+                            [
+                              _c("span", [
+                                _vm._v(_vm._s(_vm.__("New Password")))
+                              ])
+                            ]
                           ),
+                          _vm._v(" "),
                           _c("input", {
                             directives: [
                               {
@@ -1204,8 +1212,13 @@ var render = function() {
                                 "block font-medium text-sm text-gray-700",
                               attrs: { for: "confirm_password" }
                             },
-                            [_c("span", [_vm._v("Confirm Password")])]
+                            [
+                              _c("span", [
+                                _vm._v(_vm._s(_vm.__("Confirm Password")))
+                              ])
+                            ]
                           ),
+                          _vm._v(" "),
                           _c("input", {
                             directives: [
                               {
@@ -1259,17 +1272,6 @@ var render = function() {
                         "\n              flex\n              items-center\n              justify-end\n              px-4\n              py-3\n              bg-gray-50\n              text-right\n              sm:px-6\n              shadow\n              sm:rounded-bl-md sm:rounded-br-md\n            "
                     },
                     [
-                      _c("div", { staticClass: "mr-3" }, [
-                        _c(
-                          "div",
-                          {
-                            staticClass: "text-sm text-gray-600",
-                            staticStyle: { display: "none" }
-                          },
-                          [_vm._v("\n                Saved.\n              ")]
-                        )
-                      ]),
-                      _vm._v(" "),
                       _c(
                         "button",
                         {
@@ -1277,7 +1279,13 @@ var render = function() {
                             "\n                inline-flex\n                items-center\n                px-4\n                py-2\n                bg-gray-800\n                border border-transparent\n                rounded-md\n                font-semibold\n                text-xs text-white\n                uppercase\n                tracking-widest\n                hover:bg-gray-700\n                active:bg-gray-900\n                focus:outline-none\n                focus:border-gray-900\n                focus:ring focus:ring-gray-300\n                disabled:opacity-25\n                transition\n              ",
                           attrs: { type: "submit" }
                         },
-                        [_vm._v("\n              Save\n            ")]
+                        [
+                          _vm._v(
+                            "\n              " +
+                              _vm._s(_vm.__("Save")) +
+                              "\n            "
+                          )
+                        ]
                       )
                     ]
                   )
@@ -1290,30 +1298,10 @@ var render = function() {
       1
     ),
     _vm._v(" "),
-    _vm._m(1)
+    _vm._m(0)
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "md:col-span-1 flex justify-between" }, [
-      _c("div", { staticClass: "px-4 sm:px-0" }, [
-        _c("h3", { staticClass: "text-lg font-medium text-gray-900" }, [
-          _vm._v("Update Password")
-        ]),
-        _vm._v(" "),
-        _c("p", { staticClass: "mt-1 text-sm text-gray-600" }, [
-          _vm._v(
-            "\n          Ensure your account is using a long, random password to stay secure.\n        "
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "px-4 sm:px-0" })
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
