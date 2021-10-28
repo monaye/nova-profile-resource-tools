@@ -2,7 +2,9 @@
 
 namespace Monaye\NovaProfileResourceTools\Controllers;
 
+use App\Events\UserDeleted;
 use Exception;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Routing\Controller;
@@ -54,5 +56,23 @@ class NovaProfileResourceToolsController extends Controller
         $user->forceFill([
             'password' => Hash::make($request->password),
         ])->save();
+
+        return response()->json([
+            'message' => 'パスワードを更新しました。',
+        ]);
+    }
+
+    public function deleteAccount(Request $request)
+    {
+        Validator::make($request->all(), [
+            'password' => ['required', 'current_password:web'],
+        ])->validate();
+
+        // delete user immediately then rest will be delete with queue 
+        $request->user()->forceDelete();
+
+        return response()->json([
+            'message' => 'アカウントを削除しました。',
+        ]);
     }
 }

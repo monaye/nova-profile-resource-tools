@@ -23,3 +23,6 @@ Route::post('/information', config('nova-profile-resource-tools.handleInformatio
 
 Route::post('/password', config('nova-profile-resource-tools.handlePasswordUpdate'))
     ->name('update-nova-profile-password');
+
+Route::post('/delete-account', config('nova-profile-resource-tools.handleDeleteAccount'))
+    ->name('delete-nova-profile-account');
