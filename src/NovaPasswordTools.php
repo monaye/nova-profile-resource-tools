@@ -6,6 +6,11 @@ use Laravel\Nova\ResourceTool;
 
 class NovaPasswordTools extends ResourceTool
 {
+    public function __construct($title)
+    {
+        parent::__construct();
+        $this->withMeta(['title' => $title]);
+    }
     /**
      * Get the displayable name of the resource tool.
      *

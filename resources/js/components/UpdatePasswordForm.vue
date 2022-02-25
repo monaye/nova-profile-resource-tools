@@ -4,9 +4,9 @@
       <div class="md:col-span-1 flex justify-between">
         <div class="px-4 sm:px-0">
           <h3 class="text-lg font-medium text-gray-900">
-            {{ __("Update Password") }}
+            {{ this.title }}
           </h3>
-          <p class="mt-1 text-sm text-gray-600">
+          <p class="mt-1 text-gray-600">
             {{
               __(
                 "Ensure your account is using a long, random password to stay secure."
@@ -17,7 +17,7 @@
         <div class="px-4 sm:px-0"></div>
       </div>
       <loading-card :loading="loading" class="md:col-span-2">
-        <div class="mt-5 md:mt-0 md:col-span-2">
+        <div class="md:mt-0 md:col-span-2">
           <form @submit.prevent="onSubmitForm">
             <div
               class="
@@ -33,19 +33,22 @@
                 <!-- currentPassword -->
                 <div class="col-span-6 sm:col-span-4">
                   <label
-                    class="block font-medium text-sm text-gray-700"
+                    class="block font-medium text-gray-700"
                     for="current_password"
                     ><span>{{ __("Current Password") }}</span></label
                   ><input
                     class="
-                      border-gray-300
-                      focus:border-indigo-300
-                      focus:ring focus:ring-indigo-200 focus:ring-opacity-50
-                      rounded-md
-                      shadow-sm
                       mt-1
-                      block
+                      border-gray-300
+                      appearance-none
+                      border
+                      rounded
                       w-full
+                      py-2
+                      px-3
+                      text-gray-700
+                      leading-tight
+                      focus:outline-none
                     "
                     id="current_password"
                     type="password"
@@ -53,28 +56,29 @@
                     v-on:keyup="resetCurrentPasswordErrorMessage"
                   />
                   <div class="mt-2" v-if="hasError('current_password')">
-                    <p class="text-sm text-red-600">
+                    <p class="text-red-600">
                       {{ errors.current_password[0] }}
                     </p>
                   </div>
                 </div>
                 <!-- new password -->
                 <div class="col-span-6 sm:col-span-4">
-                  <label
-                    class="block font-medium text-sm text-gray-700"
-                    for="password"
+                  <label class="block font-medium text-gray-700" for="password"
                     ><span>{{ __("New Password") }}</span></label
                   >
                   <input
                     class="
-                      border-gray-300
-                      focus:border-indigo-300
-                      focus:ring focus:ring-indigo-200 focus:ring-opacity-50
-                      rounded-md
-                      shadow-sm
                       mt-1
-                      block
+                      border-gray-300
+                      appearance-none
+                      border
+                      rounded
                       w-full
+                      py-2
+                      px-3
+                      text-gray-700
+                      leading-tight
+                      focus:outline-none
                     "
                     id="password"
                     type="password"
@@ -82,7 +86,7 @@
                     v-on:keyup="resetNewPasswordErrorMessage"
                   />
                   <div class="mt-2" v-if="hasError('password')">
-                    <p class="text-sm text-red-600">
+                    <p class="text-red-600">
                       {{ errors.password[0] }}
                     </p>
                   </div>
@@ -90,20 +94,23 @@
                 <!-- confirmPassword -->
                 <div class="col-span-6 sm:col-span-4">
                   <label
-                    class="block font-medium text-sm text-gray-700"
+                    class="block font-medium text-gray-700"
                     for="confirm_password"
                     ><span>{{ __("Confirm Password") }}</span></label
                   >
                   <input
                     class="
-                      border-gray-300
-                      focus:border-indigo-300
-                      focus:ring focus:ring-indigo-200 focus:ring-opacity-50
-                      rounded-md
-                      shadow-sm
                       mt-1
-                      block
+                      border-gray-300
+                      appearance-none
+                      border
+                      rounded
                       w-full
+                      py-2
+                      px-3
+                      text-gray-700
+                      leading-tight
+                      focus:outline-none
                     "
                     id="confirm_password"
                     type="password"
@@ -111,7 +118,7 @@
                     v-on:keyup="resetConfirmPasswordErrorMessage"
                   />
                   <div class="mt-2" v-if="hasError('password_confirmation')">
-                    <p class="text-sm text-red-600">
+                    <p class="text-red-600">
                       {{ errors.password_confirmation[0] }}
                     </p>
                   </div>
@@ -150,7 +157,8 @@
                   active:bg-gray-900
                   focus:outline-none
                   focus:border-gray-900
-                  focus:ring focus:ring-gray-300
+                  focus:ring
+                  focus:ring-gray-300
                   disabled:opacity-25
                   transition
                 "
@@ -182,6 +190,7 @@ export default {
       currentPassword: "",
       newPassword: "",
       confirmPassword: "",
+      title: this.panel.fields[0].title,
     };
   },
   computed: {},

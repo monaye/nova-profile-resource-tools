@@ -7,12 +7,13 @@ use Laravel\Nova\ResourceTool;
 class NovaDeleteAccountTools extends ResourceTool
 {
 
-    public function __construct()
+    public function __construct($title)
     {
         parent::__construct();
 
         $this->withMeta([
             'app_url' => config('app.url'),
+            'title' => $title,
         ]);
     }
 

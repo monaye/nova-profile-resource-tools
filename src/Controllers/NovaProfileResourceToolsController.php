@@ -24,7 +24,7 @@ class NovaProfileResourceToolsController extends Controller
             'name' => ['required'],
             'email' => [
                 'required', 'email',
-                Rule::unique('users')->ignore($user)->whereNull('deleted_at'),
+                Rule::unique('users')->ignore($user),
             ],
         ])->validate();
 

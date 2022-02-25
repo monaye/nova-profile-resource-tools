@@ -4,7 +4,7 @@
       <div class="md:col-span-1 flex justify-between">
         <div class="px-4 sm:px-0">
           <h3 class="text-lg font-medium text-gray-900">
-            {{ __("Profile Information") }}
+            {{ this.title }}
           </h3>
           <p class="mt-1 text-sm text-gray-600">
             {{
@@ -36,14 +36,17 @@
                     ><span>{{ __("Name") }}</span></label
                   ><input
                     class="
-                      border-gray-300
-                      focus:border-indigo-300
-                      focus:ring focus:ring-indigo-200 focus:ring-opacity-50
-                      rounded-md
-                      shadow-sm
                       mt-1
-                      block
+                      border-gray-300
+                      appearance-none
+                      border
+                      rounded
                       w-full
+                      py-2
+                      px-3
+                      text-gray-700
+                      leading-tight
+                      focus:outline-none
                     "
                     id="name"
                     type="text"
@@ -64,14 +67,17 @@
                     ><span>{{ __("Email") }}</span></label
                   ><input
                     class="
-                      border-gray-300
-                      focus:border-indigo-300
-                      focus:ring focus:ring-indigo-200 focus:ring-opacity-50
-                      rounded-md
-                      shadow-sm
                       mt-1
-                      block
+                      border-gray-300
+                      appearance-none
+                      border
+                      rounded
                       w-full
+                      py-2
+                      px-3
+                      text-gray-700
+                      leading-tight
+                      focus:outline-none
                     "
                     id="email"
                     type="email"
@@ -118,7 +124,8 @@
                   active:bg-gray-900
                   focus:outline-none
                   focus:border-gray-900
-                  focus:ring focus:ring-gray-300
+                  focus:ring
+                  focus:ring-gray-300
                   disabled:opacity-25
                   transition
                 "
@@ -146,6 +153,7 @@ export default {
         email: [],
       },
       loading: false,
+      title: this.panel.fields[0].title,
       name: this.panel.fields[0].name,
       email: this.panel.fields[0].email,
     };

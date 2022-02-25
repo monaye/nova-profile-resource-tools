@@ -3,17 +3,17 @@
     <div class="md:col-span-1 flex justify-between">
       <div class="px-4 sm:px-0">
         <h3 class="text-lg font-medium text-gray-900">
-          {{ __("Delete Account") }}
+          {{ this.title }}
         </h3>
-        <p class="mt-1 text-sm text-gray-600">
+        <p class="mt-1 text-gray-600">
           {{ __("Permanently delete your account.") }}
         </p>
       </div>
       <div class="px-4 sm:px-0"></div>
     </div>
     <div class="mt-5 md:mt-0 md:col-span-2">
-      <div class="px-4 py-5 sm:p-6 bg-white shadow sm:rounded-lg">
-        <div class="max-w-xl text-sm text-gray-600">
+      <div class="px-4 py-5 sm:p-6 bg-white shadow rounded-md">
+        <div class="max-w-xl text-gray-600">
           {{
             __(
               "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain."
@@ -39,7 +39,8 @@
               hover:bg-red-500
               focus:outline-none
               focus:border-red-700
-              focus:ring focus:ring-red-200
+              focus:ring
+              focus:ring-red-200
               active:bg-red-600
               disabled:opacity-25
               transition
@@ -52,7 +53,18 @@
         <!-- Delete Account Confirmation Modal -->
         <!--teleport start-->
         <div
-          class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50"
+          class="
+            flex
+            fixed
+            right-0
+            left-0
+            top-4
+            z-50
+            justify-center
+            items-center
+            h-modal
+            md:h-full md:inset-0
+          "
           scroll-region=""
           style=""
           v-show="confirmingUserDeletion"
@@ -69,9 +81,7 @@
               shadow-xl
               transform
               transition-all
-              sm:w-full
-              sm:mx-auto
-              sm:max-w-2xl
+              max-w-lg
             "
             style=""
           >
@@ -88,14 +98,17 @@
                     v-model="password"
                     ref="password"
                     class="
-                      border-gray-300
-                      focus:border-indigo-300
-                      focus:ring focus:ring-indigo-200 focus:ring-opacity-50
-                      rounded-md
-                      shadow-sm
                       mt-1
-                      block
-                      w-3/4
+                      border-gray-300
+                      appearance-none
+                      border
+                      rounded
+                      w-full
+                      py-2
+                      px-3
+                      text-gray-300
+                      leading-tight
+                      focus:outline-none
                     "
                     type="password"
                     placeholder="パスワード"
@@ -108,7 +121,7 @@
                     "
                   />
                   <div class="mt-2" v-show="errors.password">
-                    <p class="text-sm text-red-600">
+                    <p class="text-red-600">
                       {{ errors.password[0] }}
                     </p>
                   </div>
@@ -134,9 +147,9 @@
                   hover:text-gray-500
                   focus:outline-none
                   focus:border-blue-300
-                  focus:ring focus:ring-blue-200
-                  active:text-gray-800
-                  active:bg-gray-50
+                  focus:ring
+                  focus:ring-blue-200
+                  active:text-gray-800 active:bg-gray-50
                   disabled:opacity-25
                   transition
                 "
@@ -161,7 +174,8 @@
                   hover:bg-red-500
                   focus:outline-none
                   focus:border-red-700
-                  focus:ring focus:ring-red-200
+                  focus:ring
+                  focus:ring-red-200
                   active:bg-red-600
                   disabled:opacity-25
                   transition
@@ -189,6 +203,7 @@ export default {
       errors: {
         password: [],
       },
+      title: this.panel.fields[0].title,
     };
   },
   mounted() {
