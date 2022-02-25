@@ -1,4 +1,4 @@
-## Nova Tippy Field
+## Nova Profile Resource Tools
 Laravel Nova Profile Resource Tools provide the 3 resource tools ([Resource Tools](https://nova.laravel.com/docs/3.0/customization/resource-tools.html)) 
   
 1. NovaProfileInformationTools  
