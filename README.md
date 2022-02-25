@@ -25,7 +25,7 @@ composer require monaye/nova-profile-resource-tools
 This package rely on the full Tailwind and recommend using the `optimistdigital/nova-tailwind`.
 ```
 composer require optimistdigital/nova-tailwind
-``
+```
 
 ### Usage
 
@@ -33,9 +33,8 @@ composer require optimistdigital/nova-tailwind
 use Monaye\NovaProfileResourceTools\NovaPasswordTools;
 use Monaye\NovaProfileResourceTools\NovaDeleteAccountTools;
 use Monaye\NovaProfileResourceTools\NovaProfileInformationTools;
-```
 
-```php
+
 public function fields(Request $request)
 {
     return [
@@ -52,7 +51,7 @@ public function fields(Request $request)
 
 ---
 ## Configuring Controller
-This package come with a default controller and methods to handle all 3 APIs call from the components. You could overwrite the controller@method to handle the API call instead of the shipped one.
+This package come with a default controller and methods to handle all 3 APIs call from the components. You could overwrite the controller@method to handle the API call instead of the default one.
 
 To user your own controller@method, first publish the config file
 
