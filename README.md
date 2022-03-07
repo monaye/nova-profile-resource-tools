@@ -56,8 +56,7 @@ This package come with a default controller and methods to handle all 3 APIs cal
 To user your own controller@method, first publish the config file
 
 ```
-php artisan vendor:publish
-// choose Monaye\NovaProfileResourceTools\ToolServiceProvider 
+php artisan vendor:publish --tag=nova-profile-resource-tools
 ```
 
 Open the config file `config/nova-profile-resource-tools.php` and update.

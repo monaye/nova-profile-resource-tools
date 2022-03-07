@@ -25,7 +25,7 @@ class ToolServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../config/' . self::$slug . '.php' => config_path(self::$slug . '.php'),
-        ]);
+        ], self::$slug);
 
         Nova::serving(function (ServingNova $event) {
             Nova::script(self::$slug, __DIR__ . '/../dist/js/tool.js');
