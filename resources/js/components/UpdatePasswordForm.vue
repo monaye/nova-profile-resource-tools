@@ -194,14 +194,10 @@ export default {
     };
   },
   computed: {},
-  mounted() {
-    console.log("mounting update profile info", this.panel);
-  },
 
   methods: {
     hasError: function (name) {
       if (name) {
-        console.log("has error", name, this.errors[name]);
         return this.errors[name] && this.errors[name].length;
       }
 
@@ -232,38 +228,6 @@ export default {
       this.errors[key] = [];
     },
     updatePassword() {
-      // since we are disabling the button this shouldn't happen
-
-      if (!this.newPassword) {
-        this.errors.password = [Nova.app.__("The password field is required.")];
-      }
-      if (!this.currentPassword) {
-        this.errors.current_password = [
-          Nova.app.__("The current password field is required."),
-        ];
-      }
-
-      if (!this.confirmPassword) {
-        this.errors.password_confirmation = [
-          Nova.app.__("Please confirm your password."),
-        ];
-      }
-
-      console.log("has error", this.hasError());
-      if (this.hasError()) {
-        // this.$forceUpdate();
-        return;
-      }
-
-      if (this.newPassword !== this.confirmPassword) {
-        this.confirmPasswordErrorMessage = __(
-          Nova.app.__(
-            "New password and confirm password doesn't match. Please check your new password again."
-          )
-        );
-        return;
-      }
-
       this.loading = true;
 
       Nova.request()
@@ -273,16 +237,11 @@ export default {
           password_confirmation: this.confirmPassword,
         })
         .then((response) => {
-          console.log("success");
-          console.log(response);
           this.loading = false;
-
           this.$toasted.success(response.data.message);
         })
         .catch((error) => {
-          console.log("error on update card", error.response.data.errors);
           this.loading = false;
-
           if (error.response.data.errors) {
             this.errors = error.response.data.errors;
             return;
@@ -290,7 +249,7 @@ export default {
 
           this.$toasted.error(
             Nova.app.__(
-              "保存中にエラーが発生いたしました。ページを一度閉じてやり直してください。"
+              "Unknown error occurred while saving. Please refresh the page and try again."
             )
           );
         });

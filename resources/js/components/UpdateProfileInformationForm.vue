@@ -159,10 +159,6 @@ export default {
     };
   },
   computed: {},
-  mounted() {
-    console.log("mounting update profile info", this.panel);
-  },
-
   methods: {
     formHasError() {
       return !this.hasCorrentEmailFormat() || !this.email || !this.name;
@@ -191,7 +187,6 @@ export default {
       this.errors[key] = [];
     },
     resetNameErrorMessage() {
-      console.log("resetting name");
       this.resetErrorMessage("name");
     },
     resetEmailErrorMessage() {
@@ -204,7 +199,6 @@ export default {
       if (!this.email) {
         this.errors.email = [Nova.app.__("Email is required.")];
       } else if (!this.hasCorrentEmailFormat()) {
-        console.log("has corrent email", this.hasCorrentEmailFormat());
         this.errors.email = [Nova.app.__("Please enter corrent email format.")];
       }
 
@@ -225,7 +219,6 @@ export default {
           this.$toasted.success(response.data.message);
         })
         .catch((error) => {
-          console.log("error on update card", error);
           this.loading = false;
 
           if (error.response.data.errors) {
@@ -234,7 +227,7 @@ export default {
           }
           this.$toasted.error(
             Nova.app.__(
-              "保存中にエラーが発生いたしました。ページを一度閉じてやり直してください。"
+              "Unknown error occurred while saving. Please refresh the page and try again."
             )
           );
         });

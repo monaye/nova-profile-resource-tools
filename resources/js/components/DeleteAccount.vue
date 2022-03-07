@@ -206,12 +206,8 @@ export default {
       title: this.panel.fields[0].title,
     };
   },
-  mounted() {
-    console.log("delete account mounted");
-  },
   methods: {
     showConfirmUserDeletion() {
-      console.log("show confirm user deletion");
       this.confirmingUserDeletion = true;
       setTimeout(() => this.$refs.password.focus(), 250);
     },
@@ -225,7 +221,6 @@ export default {
           password: this.password,
         })
         .then((response) => {
-          console.log("performing delete account", response);
           this.confirmingUserDeletion = false;
           // Simulate an HTTP redirect:
           window.location.replace(this.panel.fields[0].app_url);
@@ -238,7 +233,7 @@ export default {
           }
           this.$toasted.error(
             Nova.app.__(
-              "保存中にエラーが発生いたしました。ページを一度閉じてやり直してください。"
+              "Unknown error occurred while saving. Please refresh the page and try again."
             )
           );
         });
