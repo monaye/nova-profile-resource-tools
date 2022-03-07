@@ -160,14 +160,6 @@ export default {
   },
   computed: {},
   methods: {
-    formHasError() {
-      return !this.hasCorrentEmailFormat() || !this.email || !this.name;
-    },
-    hasCorrentEmailFormat() {
-      return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-        this.email
-      );
-    },
     hasError: function (name) {
       if (name) {
         return this.errors[name] && this.errors[name].length;
@@ -193,19 +185,6 @@ export default {
       this.resetErrorMessage("email");
     },
     updateProfileInformation() {
-      if (!this.name) {
-        this.errors.name = [Nova.app.__("Name is required.")];
-      }
-      if (!this.email) {
-        this.errors.email = [Nova.app.__("Email is required.")];
-      } else if (!this.hasCorrentEmailFormat()) {
-        this.errors.email = [Nova.app.__("Please enter corrent email format.")];
-      }
-
-      if (this.formHasError()) {
-        return;
-      }
-
       this.loading = true;
       Nova.request()
         .post(`/nova-vendor/nova-profile-resource-tools/information`, {
@@ -213,8 +192,6 @@ export default {
           email: this.email,
         })
         .then((response) => {
-          console.log("success");
-          console.log(response);
           this.loading = false;
           this.$toasted.success(response.data.message);
         })
