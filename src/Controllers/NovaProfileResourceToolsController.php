@@ -28,15 +28,12 @@ class NovaProfileResourceToolsController extends Controller
             ],
         ])->validate();
 
+        $user->name = $request->name;
         $user->email = $request->email;
-        $user->username = $request->email;
         $user->save();
-        $owner = $user->owner;
-        $owner->name = $request->name;
-        $owner->save();
 
         return response()->json([
-            'message' => 'プロフィールを更新しました。',
+            'message' => __('Account information updated successfully.'),
         ]);
     }
 
@@ -58,7 +55,7 @@ class NovaProfileResourceToolsController extends Controller
         ])->save();
 
         return response()->json([
-            'message' => 'パスワードを更新しました。',
+            'message' => __('Passsword updated successfully.'),
         ]);
     }
 
@@ -68,11 +65,10 @@ class NovaProfileResourceToolsController extends Controller
             'password' => ['required', 'current_password:web'],
         ])->validate();
 
-        // delete user immediately then rest will be delete with queue 
         $request->user()->forceDelete();
 
         return response()->json([
-            'message' => 'アカウントを削除しました。',
+            'message' => __('Account removed successfully.'),
         ]);
     }
 }
