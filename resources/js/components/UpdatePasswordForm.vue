@@ -196,6 +196,11 @@ export default {
   computed: {},
 
   methods: {
+    resetInputs: function () {
+      this.currentPassword = "";
+      this.newPassword = "";
+      this.confirmPassword = "";
+    },
     hasError: function (name) {
       if (name) {
         return this.errors[name] && this.errors[name].length;
@@ -238,6 +243,7 @@ export default {
         })
         .then((response) => {
           this.loading = false;
+          this.resetInputs();
           this.$toasted.success(response.data.message);
         })
         .catch((error) => {
